@@ -61,3 +61,8 @@ export interface SectionProps {
     buttonText: string;
     buttonHref: string;
 }
+
+export interface IThumbnail {
+    imageUrl: string;
+    title: string;
+}

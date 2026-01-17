@@ -39,7 +39,7 @@ export default function Footer() {
             >
                 <p className="max-w-60">Making every customer feel valued—no matter the size of your audience.</p>
                 
-                <p className="mt-3 text-center">&copy; {new Date().getFullYear()} <a href="https://prebuiltui.com?utm_source=pixels">PrebuiltUI</a></p>
+                <p className="mt-3 text-center">&copy; {new Date().getFullYear()} <a href="">Thumblify</a></p>
             </motion.div>
         </footer>
     );
