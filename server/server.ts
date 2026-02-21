@@ -5,6 +5,7 @@ import connectDB from "./configs/db.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import AuthRouter from './Routes/AuthRoutes.js'
+import ThumbnailRouter from './Routes/ThumbnailRoutes.js'
 
 declare module 'express-session' {
     interface SessionData {
@@ -19,18 +20,25 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin : ['http://localhost:5173/','http://localhost:3000/']
+    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    credentials: true
 }))
 
+const isProd = process.env.NODE_ENV === 'production';
 app.use(session({
-    secret: process.env.SESSION_SECRET as string,
-    resave : false,
+    secret: (process.env.SESSION_SECRET as string) || 'dev-secret-change-in-production',
+    resave: false,
     saveUninitialized: false,
-    cookie: {maxAge: 1000 * 60 * 60 * 24 * 7},
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        httpOnly: true,
+        sameSite: isProd ? 'lax' : 'lax',
+        secure: isProd,
+    },
     store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URI as string,
-        collectionName:'sessions'
-    })
+        collectionName: 'sessions',
+    }),
 }))
 
 app.use(express.json());
@@ -40,6 +48,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/auth', AuthRouter)
+app.use('/api/thumbnail', ThumbnailRouter)
 
 const port = process.env.PORT || 3000;
 
