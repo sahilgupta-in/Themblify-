@@ -63,28 +63,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const logout = async () => {
         try {
             const { data } = await api.post('/api/auth/logout');
-            setUser(null)
-            setIsLoggedIn(false)
-            toast.success(data.message)
-        } catch (error) {
-            console.log(error);
+            setUser(null);
+            setIsLoggedIn(false);
+            if (data?.message) toast.success(data.message);
+        } catch (error: any) {
+            setUser(null);
+            setIsLoggedIn(false);
+            const msg = error.response?.data?.message || (error.code === 'ERR_NETWORK' ? 'Could not reach server' : 'Logout failed');
+            toast.error(msg);
+            console.error('Logout error:', error);
         }
-
-    }
+    };
 
     const fetchUser = async () => {
         try {
             const { data } = await api.get('/api/auth/verify');
-            if(data.user){
-                setUser(data.user as IUser)
-                setIsLoggedIn(true)
+            if (data?.user) {
+                setUser(data.user as IUser);
+                setIsLoggedIn(true);
             }
-        } catch (error) {
+        } catch {
             // Silently fail - user is not logged in
-            console.log(error);
         }
-
-    }
+    };
 
     useEffect(() => {
         (async () => {

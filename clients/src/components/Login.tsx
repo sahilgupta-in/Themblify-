@@ -36,8 +36,10 @@ const Login = () => {
             } else {
                 await signUp({ name, email, password })
             }
-        } catch (error) {
-            console.error('Auth error:', error)
+            // Success: redirect immediately so user doesn't see a flash
+            navigate('/', { replace: true })
+        } catch {
+            // Error already shown by AuthContext toast
         } finally {
             setLoading(false)
         }
